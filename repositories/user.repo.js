@@ -9,6 +9,8 @@ class UserRepo {
 
   create = (userData) => User.create(userData);
 
+  findByApiKey = (apiKeyHash) => User.findOne({ apiKeyHash });
+
   update = ({ _id, updatedData }) => {
     const { _id: _, ...cleanData } = updatedData;
 

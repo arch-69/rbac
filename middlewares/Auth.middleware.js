@@ -1,5 +1,7 @@
 import ApiError from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
+import container from "../container.js";
+import generateHash from "../utils/GenerateHash.js";
 
 export const authenticate = (req, res, next) => {
   const header = req.headers.authorization;
@@ -30,3 +32,39 @@ export const authenticate = (req, res, next) => {
     return next(new ApiError(500, error.message || "Internal Server Error"));
   }
 };
+
+export const hasPermission =
+  (...requiredPermissions) =>
+  async (req, res, next) => {
+    const userRepo = container.resolve("userRepo");
+    const apiKey = req.headers["x-api-key"];
+
+    if (!apiKey) {
+      return next(new ApiError(401, "Authorization: Missing Api Key"));
+    }
+
+    const apiKeyHash = generateHash(apiKey);
+
+    try {
+      const user = await userRepo.findByApiKey(apiKeyHash).populate("role");
+
+      if (!user) {
+        return next(new ApiError(401, "Authorization: Invalid Api Key"));
+      }
+
+      const userPermissions = user.role?.permissions;
+
+      const hasAllRequired = requiredPermissions.every((perm) =>
+        userPermissions.includes(perm),
+      );
+
+      if (!hasAllRequired) {
+        return next(new ApiError(403, "Permission: Permission Denied"));
+      }
+
+      req.user = user;
+      next();
+    } catch (error) {
+      return next(new ApiError(500, error.message, error.errors));
+    }
+  };

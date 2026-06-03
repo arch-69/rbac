@@ -18,9 +18,13 @@ const userSchema = new mongoose.Schema(
     },
 
     role: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+    },
+
+    apiKeyHash: {
       type: String,
-      enum: ["customer", "seller", "moderator", "admin"],
-      default: "customer",
+      unique: true,
     },
 
     avatar: {
