@@ -26,11 +26,11 @@ class AuthService {
     if (password !== undefined) userdata.password = password;
     if (avatar !== undefined) userdata.avatar = avatar;
     if (role) userdata.role = await role._id;
-    userdata.apiKeyHash = generateHash(generaterApiKey());
+    const rowApiKey = generaterApiKey();
+    userdata.apiKeyHash = generateHash(rowApiKey);
 
     const response = await this.userRepo.create(userdata);
-
-    return response;
+    return { apiKey: rowApiKey, ...response };
   };
 }
 

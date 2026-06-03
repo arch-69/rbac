@@ -21,6 +21,8 @@ const taskSchema = new mongoose.Schema(
       ref: "User",
     },
 
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+
     status: {
       type: String,
       enum: ["pending", "reviewed", "completed", "todo"],

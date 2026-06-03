@@ -54,7 +54,7 @@ export const hasPermission =
 
       const userPermissions = user.role?.permissions;
 
-      const hasAllRequired = requiredPermissions.every((perm) =>
+      const hasAllRequired = requiredPermissions.some((perm) =>
         userPermissions.includes(perm),
       );
 

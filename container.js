@@ -6,6 +6,8 @@ import TaskRepo from "./repositories/task.repo.js";
 import TaskService from "./services/task.service.js";
 import RoleRepo from "./repositories/role.repo.js";
 import UserService from "./services/user.service.js";
+import Task from "./controllers/Task.controller.js";
+import User from "./controllers/User.controller.js";
 
 const container = createContainer();
 
@@ -17,6 +19,8 @@ container.register({
   taskService: asClass(TaskService).singleton(),
   roleRepo: asClass(RoleRepo).singleton(),
   userService: asClass(UserService).singleton(),
+  taskController: asClass(Task).singleton(),
+  userController: asClass(User).singleton(),
 });
 
 export default container;

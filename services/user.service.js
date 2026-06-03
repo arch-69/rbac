@@ -24,6 +24,22 @@ class UserService {
       throw new ApiError(500, error.message, error.errors);
     }
   };
+
+  createRole = async ({ role, permissions }) => {
+    if (!role || !permissions)
+      throw new ApiError(
+        400,
+        "Insufficient Data: no role and permission is provided",
+      );
+    try {
+      const isRole = await this.roleRepo.findByRole(role);
+      if (isRole) throw new ApiError(409, "Already Exist: role already exist");
+      const response = this.roleRepo.create({ name: role, permissions });
+      return response;
+    } catch (error) {
+      throw new ApiError(500, error.message, error.errors);
+    }
+  };
 }
 
 export default UserService;
